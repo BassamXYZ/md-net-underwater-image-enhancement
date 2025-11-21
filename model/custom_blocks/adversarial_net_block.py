@@ -22,6 +22,6 @@ class AdversarialNetBlock(nn.Module):
         x3 = self.dweu_group(x1)
 
         x4 = x2 * x3 + x33
-        y = self.Final(x4)
+        y = self.final(x4)
 
         return y
