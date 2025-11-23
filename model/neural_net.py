@@ -14,11 +14,8 @@ class NeuralNetwork(nn.Module):
     def forward(self, data):
         j_out = self.srd(data)
         t_out = self.tmd(data)
-        if data.device == "cuda":
-            a_out = gbl(data).cuda()
-        else:
-            a_out = gbl(data)
-
+        a_out = gbl(data).cuda()
+        
         i_rec = j_out * t_out + (1 - t_out) * a_out
 
         return j_out, i_rec
