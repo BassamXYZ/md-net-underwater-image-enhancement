@@ -15,7 +15,7 @@ class NeuralNetwork(nn.Module):
         j_out = self.srd(data)
         t_out = self.tmd(data)
         a_out = gbl(data).cuda()
-
+        
         i_rec = j_out * t_out + (1 - t_out) * a_out
 
         return j_out, i_rec
