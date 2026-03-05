@@ -42,6 +42,6 @@ def save_batch(batch, save_dir):
 
     for i in range(batch.shape[0]):
         tensor = batch[i]
-        image = transforms.PILToTensor()(tensor)
+        image = transforms.ToPILImage()(tensor)
         path = os.path.join(save_dir, f"{i:03d}.png")
         image.save(path)
