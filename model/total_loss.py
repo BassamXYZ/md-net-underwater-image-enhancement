@@ -35,7 +35,7 @@ class TotalLoss(nn.Module):
 
         # Compute L2 norm of (mean - 0.5) for each channel
         color_loss = torch.sum((channel_means - 0.5) ** 2, dim=1)
-        color_loss = torch.mean(torch.sqrt(color_loss))
+        color_loss = torch.mean(color_loss)
 
         return color_loss
 
@@ -46,8 +46,14 @@ class TotalLoss(nn.Module):
         """
         return self.mse_loss(predicted_radiance, ground_truth)
 
-    def forward(self, original_images, reconstructed_images, enhanced_images,
-                ground_truth=None, use_supervision=False):
+    def forward(
+        self,
+        original_images,
+        reconstructed_images,
+        enhanced_images,
+        ground_truth=None,
+        use_supervision=False,
+    ):
         """
         Compute total loss
 
@@ -60,7 +66,8 @@ class TotalLoss(nn.Module):
         """
         # Adversarial reconstruction loss
         L_A = self.adversarial_reconstruction_loss(
-            original_images, reconstructed_images)
+            original_images, reconstructed_images
+        )
 
         # Color correction loss
         L_C = self.color_correction_loss(enhanced_images)
@@ -76,13 +83,13 @@ class TotalLoss(nn.Module):
         L_total = L_A + self.lambda_color * L_C + self.lambda_mse * L_M
 
         return {
-            'total_loss': L_total,
-            'adversarial_loss': L_A,
-            'color_loss': L_C,
-            'mse_loss': L_M,
-            'loss_components': {
-                'L_A': L_A.item(),
-                'L_C': L_C.item(),
-                'L_M': L_M.item() if use_supervision else 0.0
-            }
+            "total_loss": L_total,
+            "adversarial_loss": L_A,
+            "color_loss": L_C,
+            "mse_loss": L_M,
+            "loss_components": {
+                "L_A": L_A.item(),
+                "L_C": L_C.item(),
+                "L_M": L_M.item() if use_supervision else 0.0,
+            },
         }
