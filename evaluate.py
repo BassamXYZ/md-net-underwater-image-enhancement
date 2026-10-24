@@ -8,12 +8,12 @@ Usage:
 python evaluate.py RESULT_PATH REFERENCE_PATH
 '''
 import numpy as np
-from skimage.measure import compare_psnr, compare_ssim
+from skimage.metrics import structural_similarity as compare_ssim, peak_signal_noise_ratio as compare_psnr
 import math
 import sys
 from skimage import io, color, filters
 import os
-import math
+
 
 def rmetrics(a,b):
     
