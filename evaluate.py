@@ -208,7 +208,7 @@ def main():
 
             #reference image
             imgname = imgdir.split('corrected')[0]
-            refdir = imgname+'.png'
+            refdir = imgname
             reference = io.imread(os.path.join(reference_path,refdir))
 
             psnr,ssim = rmetrics(corrected,reference)
