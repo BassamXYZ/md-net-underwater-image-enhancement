@@ -1,7 +1,6 @@
 import numpy as np
+import torch
 from PIL import Image
-import os
-from torchvision import transforms
 
 
 def np_to_pil(np_img):
@@ -31,17 +30,27 @@ def torch_to_np(ten_img):
     """
     return ten_img.detach().cpu().numpy()[0]
 
-
-def save_batch(batch, save_dir):
+def to_pil(t):
     """
-    Save each original and prediction image as separate file
+    Converts a (3, H, W) tensor to a PIL image, clamping to [0, 1] first.
+
+    The network output is an unbounded linear convolution. Casting out-of-range values to uint8
+    without clamping makes them wrap around, which shows up as red dots and bright patches.
     """
-    os.makedirs(save_dir, exist_ok=True)
+    t = t.detach().float().clamp(0, 1).cpu()
+    arr = np.round(t.permute(1, 2, 0).numpy() * 255.0).astype(np.uint8)
+    return Image.fromarray(arr)
 
-    batch.cpu()
 
-    for i in range(batch.shape[0]):
-        tensor = batch[i]
-        image = transforms.ToPILImage()(tensor)
-        path = os.path.join(save_dir, f"{i:03d}.png")
-        image.save(path)
+def load_trained_model(path, device):
+    """Builds MD-Net, loads the checkpoint stored at `path` and returns the model in eval mode."""
+    # Imported here to avoid a circular import (neural_net -> custom_blocks -> gbl -> util)
+    from model.neural_net import NeuralNetwork
+
+    m = NeuralNetwork().to(device)
+    ckpt = torch.load(path, map_location=device, weights_only=False)
+    # Expected output: <All keys matched successfully>
+    print("load_state_dict:", m.load_state_dict(ckpt["model_state_dict"]))
+    print("checkpoint epoch index:", ckpt.get("epoch"))
+    m.eval()
+    return m

@@ -1,3 +1,2 @@
-from .uieb import UIEB
+from .underwater import UnderwaterDataset
 from .uieb_challenging import UIEBChallenging
-from .lsui import LSUI

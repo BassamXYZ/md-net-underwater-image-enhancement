@@ -1,10 +1,8 @@
 import os
 import torch
-from torch.utils.data import Dataset
 from PIL import Image
-import torchvision.transforms as transforms
+from torch.utils.data import Dataset
 from typing import Tuple, Optional, Callable
-import glob
 
 
 class UIEBChallenging(Dataset):
@@ -16,46 +14,24 @@ class UIEBChallenging(Dataset):
     ├── challenging/
     │   ├── *.jpg
     """
-
-    def __init__(self, root_dir: str, mode: str = 'test', transform: Optional[Callable] = None):
+    
+    def __init__(self, input_dir: str, transform: Optional[Callable] = None):
         """
         Initialize UIEB Challenging Dataset
 
         Args:
-            root_dir: Root directory of the UIEB dataset
-            mode: 'train', 'valid', or 'test'
+            input_dir: Path of the UIEB dataset directory 
             transform: Transformations for input images
-            image_size: Target image size (height, width)
         """
-        self.root_dir = root_dir
-        self.mode = mode
-
-        self.images_dir = os.path.join(root_dir, 'challenging')
-        self.images = sorted(glob.glob(os.path.join(self.images_dir, '*.jpg')))
-
-        if transform is None:
-            self.transform = transforms.ToTensor()
-
-        else:
-            self.transform = transform
+        self.input_dir, self.transform = input_dir, transform
+        self.input_images = sorted(os.listdir(input_dir))
 
     def __len__(self) -> int:
         """Return the number of images in the dataset"""
-        return len(self.images)
+        return len(self.input_images)
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, ...]:
-        """
-        Get a sample from the dataset
-        """
-        # Load raw image
-        image_path = self.images[idx]
-        image = Image.open(image_path).convert('RGB')
+        """Get a sample from the dataset"""
+        x = Image.open(os.path.join(self.input_dir, self.input_images[idx])).convert("RGB")
+        return self.transform(x) if self.transform else x
 
-        if self.transform:
-            image = self.transform(image)
-
-        return image
-
-    def get_image_paths(self, idx: int) -> Tuple[str, str]:
-        """Get file paths for a given index"""
-        return self.images[idx]

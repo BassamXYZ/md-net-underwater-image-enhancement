@@ -1,7 +1,7 @@
 import os
 import torch
 from tqdm import tqdm
-from model import TotalLoss
+from model.total_loss import TotalLoss
 
 
 class Trainer:

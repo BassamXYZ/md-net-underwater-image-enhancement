@@ -14,8 +14,8 @@ class NeuralNetwork(nn.Module):
     def forward(self, data):
         j_out = self.srd(data)
         t_out = self.tmd(data)
-        a_out = gbl(data).cuda()
-        
+        a_out = gbl(data).to(data.device)
+
         i_rec = j_out * t_out + (1 - t_out) * a_out
 
         return j_out, i_rec

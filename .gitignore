@@ -1,3 +1,21 @@
-.venv
-data
-__pycache__
+# Environments
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data, weights and generated outputs (keep results/tables and results/figures)
+data/
+checkpoints/
+*.pth
+*.pt
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
