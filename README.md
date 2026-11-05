@@ -206,7 +206,7 @@ Datasets are downloaded with `kagglehub` (`satyendrapalsingh/uieb-dataset`, `nou
 
 ### Inference on one image
 
-Pretrained weights: **[download link here]**
+Pretrained weights: **[download link here](https://github.com/BassamXYZ/md-net-underwater-image-enhancement/releases/tag/v1.0.0)**
 
 ```python
 import torch
