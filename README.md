@@ -125,7 +125,7 @@ These come from my own visual inspection of the comparison grids (see `results/f
 
 - **Colour:** in most images MD-Net corrects the blue/green cast more naturally than the baselines, and often looks closer to a natural scene than the dataset reference itself.
 - **Contrast and clarity:** GW + CLAHE and the references often have higher contrast and crispness. MD-Net outputs can keep a slight haze or a faint, diffuse whitish veil / brightness over the image.
-- **Failure mode, red-dominated images:** on images with a red cast (instead of the usual blue/green) the result is poor. My hypothesis, not verified: the network learned to amplify the red channel because red is the most attenuated colour underwater in the training data, so images that are already red-heavy get over-corrected.
+- **Failure mode, strong colour casts:** an image with a very strong green cast keeps a purple-green tint and noise, and very dark deep-water images turn into a dull purple-brown haze. I have not verified why; one untested possibility is that such images are rare in the training data.
 
 ![UIEB qualitative comparison](results/figures/grid_uieb.png)
 ![UIEB Challenging qualitative comparison](results/figures/grid_challenging.png)
@@ -171,7 +171,7 @@ Other differences: UIQM/UCIQE implementations vary between papers and I could no
 - UIQM and UCIQE reward contrast and are only weakly related to colour correctness; read them next to the full-reference metrics and the images.
 - The loss weights are assumed to be 1:1:1 (not stated in the paper; the paper's total-loss equation also contains a typo, `L_D`, which I read as `L_A`).
 - The model code follows the authors' public implementation and inherits some of its quirks, which I kept for fidelity: the global background light is computed from the first image of each batch only (it affects the reconstruction loss in training, not the enhanced output at inference), one convolution layer is reused twice inside each multiscale branch, some `InstanceNorm2d` layers are declared with the wrong `num_features` (harmless warning because `affine=False`). (The original hard-coded `.cuda()` call in `forward` was replaced by `.to(data.device)`, so inference also runs on CPU; training needs a GPU in practice.)
-- Failure on red-dominated images and slight haze, as described above.
+- Failure on very strong colour casts and dark deep-water scenes, and slight haze, as described above.
 
 ---
 
